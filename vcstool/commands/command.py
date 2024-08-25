@@ -95,6 +95,11 @@ def simple_main(parser, command_class, args=None):
     results = execute_jobs(
         jobs, show_progress=True, number_of_workers=args.workers,
         debug_jobs=args.debug)
+    new_result = []
+    for result in results:
+        if result['output'] != '':
+            new_result.append(result)
+    results = new_result
 
     output_results(results, hide_empty=args.hide_empty)
 
