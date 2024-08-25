@@ -97,7 +97,7 @@ def simple_main(parser, command_class, args=None):
         debug_jobs=args.debug)
     new_result = []
     for result in results:
-        if result['output'] != '':
+        if result['output'] != '' and result['output'] != 'Already up to date.':
             new_result.append(result)
     results = new_result
 
