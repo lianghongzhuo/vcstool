@@ -34,6 +34,9 @@ def get_parser():
         '--exact', action='store_true', default=False,
         help='Export commit hashes instead of branch names')
     group_exact.add_argument(
+        '--ignore-folder', action='append', default=[],
+        help='folder to ignore when exporting repositories')
+    group_exact.add_argument(
         '--exact-with-tags', action='store_true', default=False,
         help='Export unique tag names or commit hashes instead of branch '
              'names')
@@ -112,6 +115,14 @@ def main(args=None, stdout=None, stderr=None):
                 result['path'] = os.path.join(basename, result['path'])
 
     print('repositories:')
+    new_results = []
+    for result in results:
+        for folder in args.ignore_folder:
+            if (folder in result["path"]):
+                continue
+            else:
+                new_results.append(result)
+    results = new_results
     output_results(results, output_handler=output_export_data)
     output_results(results, output_handler=output_error_information)
 
