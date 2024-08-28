@@ -117,11 +117,12 @@ def main(args=None, stdout=None, stderr=None):
     print('repositories:')
     new_results = []
     for result in results:
+        contain_ignore_folder = False
         for folder in args.ignore_folder:
-            if (folder in result["path"]):
-                continue
-            else:
-                new_results.append(result)
+            if (folder in result['path']):
+                contain_ignore_folder = True
+        if not contain_ignore_folder:
+            new_results.append(result)
     results = new_results
     output_results(results, output_handler=output_export_data)
     output_results(results, output_handler=output_error_information)
