@@ -251,6 +251,11 @@ def main(args=None, stdout=None, stderr=None):
     results = execute_jobs(
         jobs, show_progress=True, number_of_workers=workers,
         debug_jobs=args.debug)
+    new_result = []
+    for result in results:
+        if 'Your branch is up to date with' not in result['output']:
+            new_result.append(result)
+    results = new_result
     output_results(results)
 
     any_error = any(r['returncode'] for r in results)
