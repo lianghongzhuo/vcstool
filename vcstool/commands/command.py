@@ -98,7 +98,8 @@ def simple_main(parser, command_class, args=None):
     new_result = []
     for result in results:
         if result['output'] != '' and result['output'] != 'Already up to date.':
-            new_result.append(result)
+            if 'nothing to commit, working tree clean' not in result['output']:
+                new_result.append(result)
     results = new_result
 
     output_results(results, hide_empty=args.hide_empty)
