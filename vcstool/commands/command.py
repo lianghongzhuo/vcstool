@@ -56,6 +56,8 @@ def add_common_arguments(
         default_workers = cpu_count()
     except NotImplementedError:
         default_workers = 4
+    if default_workers >8:
+        default_workers = 8
     group.add_argument(
         '-w', '--workers', type=check_greater_zero, metavar='N',
         default=default_workers, help='Number of parallel worker threads')
