@@ -124,6 +124,9 @@ def execute_jobs(
             if result['returncode'] == NotImplemented:
                 stdout.write('s')
             elif result['returncode']:
+                print("")
+                print(f"the command for path: {result['cwd']} failed")
+                print(f"the error message: {result['output']}")
                 stdout.write('E')
             else:
                 stdout.write('.')
