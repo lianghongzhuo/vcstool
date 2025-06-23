@@ -13,6 +13,7 @@ from vcstool.executor import output_repositories
 from vcstool.executor import output_results
 from vcstool.streams import set_streams
 import yaml
+import subprocess
 
 from .command import add_common_arguments
 from .command import Command
@@ -191,6 +192,17 @@ def add_dependencies(jobs):
                 job['depends'].add(path)
 
 
+def get_remote_url(repo_path='.'):
+    try:
+        url = subprocess.check_output(
+            ['git', '-C', repo_path, 'remote', 'get-url', 'origin'],
+            text=True
+        ).strip()
+        return url
+    except subprocess.CalledProcessError:
+        return None
+
+
 def main(args=None, stdout=None, stderr=None):
     set_streams(stdout=stdout, stderr=stderr)
 
@@ -209,7 +221,25 @@ def main(args=None, stdout=None, stderr=None):
         return 1
     jobs = generate_jobs(repos, args)
     add_dependencies(jobs)
-
+    ignore_existing_path = True
+    print("before filtering jobs:", len(jobs))
+    if ignore_existing_path:
+        new_jobs = []
+        for job in jobs:
+            remote_repo_path = job['client'].path + '/.git/config'
+            if os.path.exists(remote_repo_path):
+                current_url = get_remote_url(job['client'].path)
+                if job['command'].url != current_url:
+                    print("*" * 40)
+                    print(f"the current path {remote_repo_path} contains a repository")
+                    print(f"with URL {current_url} in config file,")
+                    print(f"and your input URL {job['command'].url} does not match.")
+                    print("please remove the existing repository or use a different path.")
+                    print("*" * 40)
+            else:
+                new_jobs.append(job)
+        jobs = new_jobs
+    print("after filtering jobs:", len(jobs))
     if args.repos:
         output_repositories([job['client'] for job in jobs])
 
