@@ -1,7 +1,7 @@
 import argparse
 import sys
+from importlib.metadata import distribution
 
-from pkg_resources import load_entry_point
 from vcstool.clients import vcstool_clients
 from vcstool.commands import vcstool_commands
 from vcstool.streams import set_streams
@@ -86,8 +86,15 @@ def get_entrypoint(command):
                 file=sys.stderr)
         return None
 
-    return load_entry_point(
-        'vcstool', 'console_scripts', 'vcs-' + commands[0])
+    return _load_entry_point('vcs-' + commands[0])
+
+
+def _load_entry_point(name):
+    for entry_point in distribution('vcstool').entry_points:
+        if entry_point.group == 'console_scripts' and \
+                entry_point.name == name:
+            return entry_point.load()
+    return None
 
 
 def get_parser_with_command_only():

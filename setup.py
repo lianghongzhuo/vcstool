@@ -1,8 +1,8 @@
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
+
 from vcstool import __version__
 
-install_requires = ['PyYAML', 'setuptools']
+install_requires = ['PyYAML']
 
 setup(
     name='vcstool',
