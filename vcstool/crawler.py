@@ -23,6 +23,10 @@ def _find_repositories(path, repos, visited, nested=False):
         if not nested:
             return
 
+    # a '.git' file marks a git worktree or submodule
+    if os.path.isfile(os.path.join(path, '.git')):
+        return
+
     try:
         listdir = os.listdir(path)
     except OSError:
